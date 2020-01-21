@@ -1,0 +1,5 @@
+env
+*.pyc
+output
+longword.py
+.vscode
