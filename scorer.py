@@ -5,7 +5,6 @@ class Scorer:
             "correct": 0,
             "incorrect": 0,
             "tot": 0,
-            "extraKeys": 0,
         }
 
     def getScore(self):

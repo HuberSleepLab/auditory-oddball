@@ -133,7 +133,6 @@ random.shuffle(allStimuli)  # randomize
 
 stimuli = list(itertools.chain(*allStimuli))  # restore as a single list
 
-print(stimuli)
 
 # appropriate labels:
 triggerLabels = [0, 0]
@@ -187,16 +186,24 @@ for indx, stimulus in enumerate(stimuli):
     datalog["keyPresses"] = keys
     datalog["condition"] = triggerLabels[stimulus]
     datalog["ISI"] = isi
+    scorer.scores["tot"] += 1
     # save pupil size! before and after tone
 
     if missing and stimulus == CONF["stimuli"]["target"]:
         missingTot += 1
+        scorer.scores["missed"] += 1
 
         # play alarm if participant hasn't given a response in a while
         if missingTot > CONF["task"]["maxMissing"]:
             Alarm.play()
             trigger.send("ALARM")
             datalog["ALARM!"] = mainClock.getTime()
+
+    elif not missing and not stimulus == CONF["stimuli"]["target"]:
+        scorer.scores["incorrect"] += 1
+
+    elif not missing and stimulus == CONF["stimuli"]["target"]:
+        scorer.scores["correct"] += 1
 
         ###########
         # Concluion
