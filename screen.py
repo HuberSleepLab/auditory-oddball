@@ -19,7 +19,7 @@ class Screen:
 
         self.window = visual.Window(
             size=CONF["screen"]["resolution"],
-            color=CONF["pause"]["backgroundColor"] or "black",
+            color=CONF["task"]["backgroundColor"] or "black",
             monitor=mon,
             fullscr=CONF["screen"]["full"],
             allowGUI=True,
