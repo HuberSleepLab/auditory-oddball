@@ -48,6 +48,10 @@ trigger = Trigger(CONF["trigger"]["serial_device"],
                   CONF["sendTriggers"], CONF["trigger"]["labels"])
 
 tones = Tones(CONF)
+
+if CONF["version"] == "main":
+    pupil = cp()  # TODO: find a better way!
+
 logging.info('Initialization completed')
 
 #########################################################################
@@ -113,9 +117,9 @@ core.wait(1)
 totTargets = math.floor(CONF["task"]["percentTarget"]
                         * CONF["task"]["totTrials"])
 
-targets = [CONF["stimuli"]["target"]] + \
-    [(CONF["stimuli"]["standard"])] * \
-    CONF["task"]["minTargetGap"]  # little list of target and padding
+targets = [(CONF["stimuli"]["standard"])] * \
+    CONF["task"]["minTargetGap"] + [CONF["stimuli"]
+                                    ["target"]]  # little list of target and padding
 
 totStandards = CONF["task"]["totTrials"] - totTargets * \
     len(targets)  # remaining standard elements
@@ -149,10 +153,13 @@ for indx, stimulus in enumerate(stimuli):
     datalog["trialID"] = trigger.sendTriggerId()
     logging.info("Trial: %s", CONF["stimuli"]["tone"][stimulus])
 
-    # play tone
+    # play tone TODO: make this on flip, so keyboard gets reset
     tones.play(CONF["stimuli"]["tone"][stimulus])
     # this might not even be necessary, double check
     trigger.send(triggerLabels[stimulus])
+
+    if CONF["version"] == "main":
+        datalog["pupilSize"] = pupil.getPupildiameter()
     # TODO: get pupil size
 
     # wait a jittered delay
