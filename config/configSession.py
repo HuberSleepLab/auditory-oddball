@@ -4,9 +4,11 @@ import git
 
 
 CONF = {
+    # TODO: figure this out for windows! (maybe bundle all the tasks together?)
     "participant": os.environ.get("participant", "00"),
     "session": os.environ.get("session", "0"),
     "version": ["main", "demo", "debug"][1],
+    "includeRest": True,
     "screen": {
         # screen size when fullscreen
         "resolution": [3840, 2160],
@@ -49,9 +51,9 @@ if CONF["version"] == "main":
 
 elif CONF["version"] == "demo":
     CONF.update({
-        "showInstructions": True,
+        "showInstructions": False,
         "sendTriggers": False,
-        "loggingLevel": logging.WARNING})
+        "loggingLevel": logging.INFO})
     CONF["screen"]["full"] = True
     CONF["timing"]["rest"] = 1
 else:

@@ -74,3 +74,8 @@ class Screen:
         self.cue.setText(word)
         self.cue.draw()
         self.window.flip()
+
+    def show_secret_instructions(self):
+        self.startPrompt.color = self.CONF["instructions"]["darkColor"]
+        self.startPrompt.draw()
+        self.window.flip()

@@ -73,7 +73,6 @@ def onFlip(stimName, logName):
     kb.clock.reset()  # this starts the keyboard clock as soon as stimulus appears
     datalog[logName] = mainClock.getTime()
 
-
 ##############
 # Introduction
 ##############
@@ -90,18 +89,41 @@ core.wait(CONF["timing"]["overview"])
 #     key = event.waitKeys()
 #     quitExperimentIf(key[0] == 'q')
 
-# # Blank screen for initial rest
-# screen.show_blank()
-# logging.info('Starting blank period')
-
-# trigger.send("StartBlank")
-# core.wait(CONF["timing"]["rest"])
-# trigger.send("EndBlank")
 
 # # Cue start of the experiment
 # screen.show_cue("START")
 # trigger.send("Start")
 # core.wait(CONF["timing"]["cue"])
+
+screen.show_blank()
+core.wait(1)
+
+
+####################
+# Fixation eyes open
+####################
+
+if CONF["includeRest"]:
+    # TODO: play start ding
+    trigger.send("StartFix")
+    fixationTimer = core.CountdownTimer(CONF["fixation"]["duration"])
+
+    logging.info("starting fixation")
+    while fixationTimer.getTime() > 0:
+        #  Record any extra key presses during wait
+        key = kb.getKeys()
+        if key:
+            quitExperimentIf(key[0].name == 'q')
+        core.wait(0.5)
+
+    # TODO: play end ding
+    trigger.send("StopFix")
+
+    # wait for keypress before starting next task
+    screen.show_secret_instructions()
+    key = event.waitKeys()
+
+    quitExperimentIf(key[0] == 'q')
 
 
 #################
@@ -212,18 +234,10 @@ for indx, stimulus in enumerate(stimuli):
 # Concluion
 ###########
 
-    # End main experiment
+# End main experiment
 screen.show_cue("DONE!")
 trigger.send("End")
 core.wait(CONF["timing"]["cue"])
-
-# Blank screen for final rest
-screen.show_blank()
-logging.info('Starting blank period')
-
-trigger.send("StartBlank")
-core.wait(CONF["timing"]["rest"])
-trigger.send("EndBlank")
 
 
 logging.info('Finished')
