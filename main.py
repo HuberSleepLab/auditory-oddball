@@ -177,7 +177,7 @@ for indx, stimulus in enumerate(stimuli):
             # TODO: make seperate function that also keeps track of q, make q in config
             quitExperimentIf(key[0].name == 'q')
             trigger.send("Response")
-            keys.append(key[0])
+            keys.append([key[0].name, key[0].rt])
             missing = False
             missingTot = 0
             # TODO: add to scorer
@@ -194,7 +194,7 @@ for indx, stimulus in enumerate(stimuli):
         scorer.scores["missed"] += 1
 
         # play alarm if participant hasn't given a response in a while
-        if missingTot > CONF["task"]["maxMissing"]:
+        if missingTot >= CONF["task"]["maxMissing"]:
             Alarm.play()
             trigger.send("ALARM")
             datalog["ALARM!"] = mainClock.getTime()
@@ -205,11 +205,14 @@ for indx, stimulus in enumerate(stimuli):
     elif not missing and stimulus == CONF["stimuli"]["target"]:
         scorer.scores["correct"] += 1
 
-        ###########
-        # Concluion
-        ###########
+    datalog.flush()
 
-        # End main experiment
+
+###########
+# Concluion
+###########
+
+    # End main experiment
 screen.show_cue("DONE!")
 trigger.send("End")
 core.wait(CONF["timing"]["cue"])
