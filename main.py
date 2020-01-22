@@ -11,10 +11,13 @@ from screen import Screen
 from scorer import Scorer
 from trigger import Trigger
 from tones import Tones
+from datalog import Datalog
+
+from capturePupil import CapturePupil as cp
 from psychopy import core, event, sound
 from psychopy.hardware import keyboard
 
-from datalog import Datalog
+
 from config.configOdball import CONF
 
 #########################################################################
@@ -149,7 +152,6 @@ for indx, stimulus in enumerate(stimuli):
     # play tone
     tones.play(CONF["stimuli"]["tone"][stimulus])
     # this might not even be necessary, double check
-    print(triggerLabels[stimulus], CONF["trigger"]["labels"])
     trigger.send(triggerLabels[stimulus])
     # TODO: get pupil size
 
@@ -172,6 +174,7 @@ for indx, stimulus in enumerate(stimuli):
             keys.append(key[0])
             missing = False
             missingTot = 0
+            # TODO: add to scorer
 
     # log
     datalog["keyPresses"] = keys

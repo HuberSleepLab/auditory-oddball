@@ -131,3 +131,4 @@ Sounds:
 
 - make function for rest, run it twice, once at beginning for seated, once at end for standing
 - have a very dim fixation square, and little text in bottom-left so experimenter knows what is happening in the "dark"
+- make sure timing is as fast as possible!
