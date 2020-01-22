@@ -104,14 +104,15 @@ core.wait(CONF["timing"]["overview"])
 screen.show_blank()
 core.wait(1)
 
+##########################
 # establish pool of trials
+
 totTargets = math.floor(CONF["task"]["percentTarget"]
                         * CONF["task"]["totTrials"])
 
 targets = [CONF["stimuli"]["target"]] + \
     [(CONF["stimuli"]["standard"])] * \
     CONF["task"]["minTargetGap"]  # little list of target and padding
-
 
 totStandards = CONF["task"]["totTrials"] - totTargets * \
     len(targets)  # remaining standard elements
@@ -120,40 +121,78 @@ allStimuli = [targets, ] * \
     totTargets, [[CONF["stimuli"]["standard"], ]]*totStandards  # list of lists
 # TODO: get rid of this extra step at some point
 allStimuli = list(itertools.chain(*allStimuli))
+
 random.shuffle(allStimuli)  # randomize
+
 stimuli = list(itertools.chain(*allStimuli))  # restore as a single list
 
+print(stimuli)
+
+# appropriate labels:
+triggerLabels = [0, 0]
+# TODO: see with simone if there's a better way
+triggerLabels[CONF["stimuli"]["target"]] = "Target"
+triggerLabels[CONF["stimuli"]["standard"]] = "Standard"
+
+
+######################
+# loop through stimuli
+
+missingTot = 0
+
 for indx, stimulus in enumerate(stimuli):
-    tones.play(CONF["stimuli"]["tones"][stimulus])
-    trigger.send("Stim")  # this might not even be necessary, double check
 
+    # start trial
+    datalog["trialID"] = trigger.sendTriggerId()
+    logging.info("Trial: %s", CONF["stimuli"]["tone"][stimulus])
+
+    # play tone
+    tones.play(CONF["stimuli"]["tone"][stimulus])
+    # this might not even be necessary, double check
+    print(triggerLabels[stimulus], CONF["trigger"]["labels"])
+    trigger.send(triggerLabels[stimulus])
+    # TODO: get pupil size
+
+    # wait a jittered delay
     isi = random.uniform(
-        CONF["tones"]["minTime"], CONF["tones"]["maxTime"])
-    isiTimer = core.CountdownTimer(isi)
-    extraKeys = []
-    logging.info("tone delay of %s", isi)
-    while isiTimer.getTime() > 0:
+        CONF["task"]["ISI"][0], CONF["task"]["ISI"][1])
 
+    isiTimer = core.CountdownTimer(isi)
+    keys = []
+    missing = True
+    logging.info("tone delay of %s", isi)
+
+    while isiTimer.getTime() > 0:
         #  Record any extra key presses during wait
         key = kb.getKeys()
         if key:
             # TODO: make seperate function that also keeps track of q, make q in config
             quitExperimentIf(key[0].name == 'q')
-            trigger.send("BadResponse")
-            extraKeys.append(mainClock.getTime())
+            trigger.send("Response")
+            keys.append(key[0])
+            missing = False
+            missingTot = 0
 
-            # Flash the fixation box to indicate unexpected key press
-            screen.flash_fixation_box()
-        # TODO: save response not extra keys!
+    # log
+    datalog["keyPresses"] = keys
+    datalog["condition"] = triggerLabels[stimulus]
+    datalog["ISI"] = isi
+    # save pupil size! before and after tone
 
+    if missing and stimulus == CONF["stimuli"]["target"]:
+        missingTot += 1
 
-# TODO: make trigger timing exact!
+        # play alarm if participant hasn't given a response in a while
+        if missingTot > CONF["task"]["maxMissing"]:
+            Alarm.play()
+            trigger.send("ALARM")
+            datalog["ALARM!"] = mainClock.getTime()
 
-###########
-# Concluion
-###########
+        ###########
+        # Concluion
+        ###########
 
-# End main experiment
+        # End main experiment
 screen.show_cue("DONE!")
 trigger.send("End")
 core.wait(CONF["timing"]["cue"])

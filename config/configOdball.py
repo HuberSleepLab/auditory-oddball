@@ -6,10 +6,11 @@ CONF.update({
     "task": {
         "name": "oddball",
         "percentTarget": .20,
-        "totTrials": 20,
+        "totTrials": 200,
         "ISI": [1.8, 2.2],  # min and max of interstimulus interval
         "backgroundColor": "#999999",
         "minTargetGap": 3,  # minimum number of non targets between targets
+        "maxMissing": 4,
     },
     "instructions": {
         "text": "Instructor gives instructions (no visuals!)",
@@ -26,3 +27,6 @@ CONF.update({
         "alarm": "horn.wav",
     }
 })
+
+CONF["trigger"]["labels"]["Target"] = 0x0A
+CONF["trigger"]["labels"]["Standard"] = 0x0B

@@ -127,4 +127,7 @@ Sounds:
 
 - horn.wav: https://freesound.org/people/mcpable/sounds/131930/
 
-# TODO: remove psychtoobox
+# TODO:
+
+- make function for rest, run it twice, once at beginning for seated, once at end for standing
+- have a very dim fixation square, and little text in bottom-left so experimenter knows what is happening in the "dark"

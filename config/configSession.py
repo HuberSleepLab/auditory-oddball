@@ -58,7 +58,7 @@ else:
     CONF.update({
         "showInstructions": False,
         "sendTriggers": False,
-        "logginLevel": logging.INFO})
+        "loggingLevel": logging.INFO})
     CONF["screen"]["full"] = True
     CONF["timing"]["rest"] = 1
     CONF["screen"]["resolution"] = [1000, 1000],
