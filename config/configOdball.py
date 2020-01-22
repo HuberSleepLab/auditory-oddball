@@ -33,7 +33,7 @@ CONFIG_SESSION_PATHS = [
 
 for path in CONFIG_SESSION_PATHS:
     if CONF:  # we already loaded a config
-        continue
+        break
 
     path = os.path.expanduser(path)
     if not os.path.isfile(path):
