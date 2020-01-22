@@ -44,10 +44,7 @@ for path in CONFIG_SESSION_PATHS:
         logging.info("Taking json config from: %s", path)
         CONF['confJsonPath'] = path
 
-print(CONF)
 CONF = selectByVersion(CONF, CONF["version"])
-print("=" * 80)
-print(CONF)
 
 
 CONF.update({
