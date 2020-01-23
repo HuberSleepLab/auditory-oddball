@@ -2,10 +2,16 @@ import os
 import logging
 import git
 import json
-# from configSession import CONF
+
+###################################################################
+
+################################################
+# get common configuration values from json file
+################################################
 
 
 def selectByVersion(data, version="main"):
+    "Runs through json and selects variables that has multiple options for different versions."
     if type(data) == dict:
         if "versionMain" in data:
             version = "version" + version[0].upper() + version[1:]
@@ -22,30 +28,58 @@ def selectByVersion(data, version="main"):
     return data
 
 
+# start configuration
 CONF = {}
+
+########################
+# look for configuration in possible locations (in order of choice)
 
 CONFIG_SESSION_PATHS = [
     '../configSession.json',
     '~/configSession.json',
-    '~/Projects/lsm-tasks/configSession.json',
     './config/configSession.json'
 ]
 
 for path in CONFIG_SESSION_PATHS:
-    if CONF:  # we already loaded a config
+    # stop searching once CONF found
+    if CONF:
         break
 
     path = os.path.expanduser(path)
     if not os.path.isfile(path):
         continue
 
+    # load CONF when found
     with open(path, 'r+') as f:
         CONF = json.load(f)
+
+        # log
         logging.info("Taking json config from: %s", path)
         CONF['confJsonPath'] = path
 
 CONF = selectByVersion(CONF, CONF["version"])
 
+# save the git version of the experiment
+repo = git.Repo(search_parent_directories=True)
+CONF["gitHash"] = repo.head.object.hexsha
+
+# set the logging level
+loggingLevels = {
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warning": logging.WARNING,
+    "error": logging.ERROR,
+    "fatal": logging.FATAL
+}
+
+CONF["loggingLevel"] = loggingLevels[CONF["loggingLevel"]]
+
+
+#################################################################
+
+#############################
+# Task specific configuration
+#############################
 
 CONF.update({
     "task": {
@@ -78,19 +112,10 @@ CONF.update({
 
 })
 
-CONF["trigger"]["labels"]["Target"] = 0x0A
-CONF["trigger"]["labels"]["Standard"] = 0x0B
-CONF["trigger"]["labels"]["StartFix"] = 0x0C
-CONF["trigger"]["labels"]["StopFix"] = 0x0D
-CONF["trigger"]["labels"]["StartStand"] = 0x0E
-CONF["trigger"]["labels"]["StopStand"] = 0x0F
-
-repo = git.Repo(search_parent_directories=True)
-CONF["gitHash"] = repo.head.object.hexsha
-
-if CONF["version"] == "main":
-    CONF["loggingLevel"] = logging.WARNING
-elif CONF["version"] == "demo":
-    CONF["loggingLevel"] = logging.INFO
-else:
-    CONF["loggingLevel"] = logging.INFO
+# add more triggers
+CONF["trigger"]["labels"]["Target"] = 10
+CONF["trigger"]["labels"]["Standard"] = 11
+CONF["trigger"]["labels"]["StartFix"] = 12
+CONF["trigger"]["labels"]["StopFix"] = 13
+CONF["trigger"]["labels"]["StartStand"] = 14
+CONF["trigger"]["labels"]["StopStand"] = 15
