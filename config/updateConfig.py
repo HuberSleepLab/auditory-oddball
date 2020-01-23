@@ -75,6 +75,7 @@ class UpdateConfig:
     def addContent(self, dictionary):
         "add new keys and values to the CONF"
         self.CONF.update(dictionary)
+        self.CONF = self._selectByVersion(self.CONF,  self.CONF["version"])
 
     def addTriggers(self, triggers):
         "add triggers inside the already existing trigger list"
