@@ -44,4 +44,3 @@ updateCofig.addContent(oddballCONF)
 updateCofig.addTriggers(oddballTriggers)
 
 CONF = updateCofig.getConfig()
-print(CONF)

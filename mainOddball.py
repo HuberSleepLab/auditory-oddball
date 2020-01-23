@@ -83,17 +83,16 @@ screen.show_overview()
 core.wait(CONF["timing"]["overview"])
 
 # Optionally, display instructions
+if CONF["showInstructions"]:
+    screen.show_instructions()
+    key = event.waitKeys()
+    quitExperimentIf(key[0] == 'q')
 
-# if CONF["showInstructions"]:
-#     screen.show_instructions()
-#     key = event.waitKeys()
-#     quitExperimentIf(key[0] == 'q')
 
-
-# # Cue start of the experiment
-# screen.show_cue("START")
-# trigger.send("Start")
-# core.wait(CONF["timing"]["cue"])
+# Cue start of the experiment
+screen.show_cue("START")
+trigger.send("Start")
+core.wait(CONF["timing"]["cue"])
 
 screen.show_blank()
 core.wait(1)
