@@ -106,7 +106,6 @@ if CONF["includeRest"]:
     # TODO: play start ding
     trigger.send("StartFix")
     fixationTimer = core.CountdownTimer(CONF["fixation"]["duration"])
-
     logging.info("starting fixation")
     while fixationTimer.getTime() > 0:
         #  Record any extra key presses during wait
@@ -174,9 +173,10 @@ for indx, stimulus in enumerate(stimuli):
     logging.info("Trial: %s", CONF["stimuli"]["tone"][stimulus])
 
     # play tone TODO: make this on flip, so keyboard gets reset
+    trigger.send(triggerLabels[stimulus])
     tones.play(CONF["stimuli"]["tone"][stimulus])
     # this might not even be necessary, double check
-    trigger.send(triggerLabels[stimulus])
+    
 
     if CONF["version"] == "main":
         datalog["pupilSize"] = pupil.getPupildiameter()
@@ -216,8 +216,10 @@ for indx, stimulus in enumerate(stimuli):
 
         # play alarm if participant hasn't given a response in a while
         if missingTot >= CONF["task"]["maxMissing"]:
-            Alarm.play()
+            
             trigger.send("ALARM")
+            core.wait(0.05)
+            Alarm.play()
             datalog["ALARM!"] = mainClock.getTime()
 
     elif not missing and not stimulus == CONF["stimuli"]["target"]:
