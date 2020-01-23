@@ -4,8 +4,8 @@ oddballCONF = {
     "task": {
         "name": "oddball",
         "percentTarget": .20,
-        "totTrials": 200,
-        "ISI": [1.8, 2.2],  # min and max of interstimulus interval
+        "totTrials": {"versionMain": 200, "versionDemo": 10, "versionDebug": 20},
+        "ISI": [1.8, 2.4],  # min and max of interstimulus interval
         "backgroundColor":  "black",   # 999999",
         "minTargetGap": 3,  # minimum number of non targets between targets
         "maxMissing": 4,
@@ -13,20 +13,19 @@ oddballCONF = {
     "instructions": {
         "text": "Instructor gives instructions (no visuals!)",
         "startPrompt": "Press any key to continue. Press q to quit.",
-        "darkColor": "#040029",
+        "darkColor": {"versionMain": "#040029", "versionDemo": "blue", "versionDebug": "white"},
     },
     "stimuli": {
         "duration": .06,  # in seconds
         "tone": [660, 440],
         "target": 0,  # TODO: counterbalance selection!!
         "standard": 1,  # TODO, make this automatically determined
-        "ramp": .01,  # if possible include a ramp
     },
     "sounds": {
         "alarm": "horn.wav",
     },
     "fixation": {
-        "duration": 60*.1,  # 60*7,
+        "duration": {"versionMain": 60*7, "versionDemo": 1, "versionDebug": 1},
     },
 }
 
