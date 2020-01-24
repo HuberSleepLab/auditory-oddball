@@ -189,6 +189,7 @@ for indx, stimulus in enumerate(stimuli):
     if CONF["version"] == "main":
         datalog["pupilSizePre"] = [
             pupil.getPupildiameter(), mainClock.getTime()]
+        core.wait(CONF["task"]["prePupilGap"])
 
     trigger.send(triggerLabels[stimulus])
     tones.play(CONF["stimuli"]["tone"][stimulus])

@@ -10,6 +10,7 @@ oddballCONF = {
         "backgroundColor":  "black",   # 999999",
         "minTargetGap": 3,  # minimum number of non targets between targets
         "maxMissing": 4,
+        "prePupilGap": 0.05,  # in seconds
     },
     "instructions": {
         "text": "Instructor gives instructions (no visuals!)",
