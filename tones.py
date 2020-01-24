@@ -12,7 +12,7 @@ class Tones:
         self.voice = sound.Sound()
 
     def play(self, tone):
-        self.tone.setSound(tone, secs=self.CONF["stimuli"]["duration"])
+        self.tone.setSound(tone, secs=self.CONF["stimuli"]["duration"], sampleRate=22050)
         self.tone.play()
         core.wait(self.CONF["stimuli"]["duration"])
 
