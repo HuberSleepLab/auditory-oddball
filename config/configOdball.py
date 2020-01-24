@@ -31,7 +31,7 @@ oddballCONF = {
         "alarm": "horn.wav",
     },
     "fixation": {
-        "duration": {"versionMain": 60*7, "versionDemo": 5, "versionDebug": 5},
+        "duration": {"versionMain": 60*10, "versionDemo": 5, "versionDebug": 5},
     },
 }
 
