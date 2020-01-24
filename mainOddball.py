@@ -40,8 +40,8 @@ kb = keyboard.Keyboard()
 
 mainClock = core.MonotonicClock()  # starts clock for timestamping events
 
-#Alarm = sound.Sound(os.path.join('sounds', CONF["sounds"]["alarm"]),
-                    #stereo=True)
+alarm = sound.Sound(os.path.join('sounds', CONF["sounds"]["alarm"]),
+                    stereo=True)
 scorer = Scorer()
 
 trigger = Trigger(CONF["trigger"]["serial_device"],
@@ -234,7 +234,7 @@ for indx, stimulus in enumerate(stimuli):
 
             trigger.send("ALARM")
             core.wait(0.05)
-            #Alarm.play()
+            alarm.play()
             datalog["ALARM!"] = mainClock.getTime()
 
     elif not missing and not stimulus == CONF["stimuli"]["target"]:
