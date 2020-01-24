@@ -102,21 +102,30 @@ core.wait(1)
 # Fixation eyes open
 ####################
 
+
 if CONF["includeRest"]:
-    # TODO: play start ding
+    # give starting instructions
+    tones.instructions("fixation", 0)
 
     trigger.send("StartFix")
     fixationTimer = core.CountdownTimer(CONF["fixation"]["duration"])
     logging.info("starting fixation")
+    pupilSizes = []
     while fixationTimer.getTime() > 0:
         #  Record any extra key presses during wait
         key = kb.getKeys()
         if key:
             quitExperimentIf(key[0].name == 'q')
-        core.wait(0.5)
 
-    # TODO: play end ding
+        if CONF["version"] == "main":
+            pupilSizes.append([pupil.getPupildiameter(), mainClock.getTime()])
+        core.wait(1)
+
     trigger.send("StopFix")
+    tones.instructions("fixation", 1)
+
+    datalog["pupilSizesFixation"] = pupilSizes
+    datalog.flush()
 
     # wait for keypress before starting next task
     screen.show_secret_instructions()
@@ -130,7 +139,6 @@ if CONF["includeRest"]:
 #################
 
 screen.show_blank()
-core.wait(1)
 
 ##########################
 # establish pool of trials
@@ -165,6 +173,11 @@ triggerLabels[CONF["stimuli"]["standard"]] = "Standard"
 ######################
 # loop through stimuli
 
+# give starting instructions
+tones.instructions("oddball", 0)
+tones.play(CONF["stimuli"]["tone"][0])
+core.wait(3)
+
 missingTot = 0
 
 for indx, stimulus in enumerate(stimuli):
@@ -173,15 +186,17 @@ for indx, stimulus in enumerate(stimuli):
     datalog["trialID"] = trigger.sendTriggerId()
     logging.info("Trial: %s", CONF["stimuli"]["tone"][stimulus])
 
-    # play tone TODO: make this on flip, so keyboard gets reset
+    if CONF["version"] == "main":
+        datalog["pupilSizePre"] = [
+            pupil.getPupildiameter(), mainClock.getTime()]
+
     trigger.send(triggerLabels[stimulus])
     tones.play(CONF["stimuli"]["tone"][stimulus])
     # this might not even be necessary, double check
-    
 
     if CONF["version"] == "main":
-        datalog["pupilSize"] = pupil.getPupildiameter()
-    # TODO: get pupil size
+        datalog["pupilSizePost"] = [
+            pupil.getPupildiameter(), mainClock.getTime()]
 
     # wait a jittered delay
     isi = random.uniform(
@@ -196,13 +211,11 @@ for indx, stimulus in enumerate(stimuli):
         #  Record any extra key presses during wait
         key = kb.getKeys()
         if key:
-            # TODO: make seperate function that also keeps track of q, make q in config
             quitExperimentIf(key[0].name == 'q')
             trigger.send("Response")
             keys.append([key[0].name, key[0].rt])
             missing = False
             missingTot = 0
-            # TODO: add to scorer
 
     # log
     datalog["keyPresses"] = keys
@@ -217,7 +230,7 @@ for indx, stimulus in enumerate(stimuli):
 
         # play alarm if participant hasn't given a response in a while
         if missingTot >= CONF["task"]["maxMissing"]:
-            
+
             trigger.send("ALARM")
             core.wait(0.05)
             Alarm.play()
@@ -231,10 +244,46 @@ for indx, stimulus in enumerate(stimuli):
 
     datalog.flush()
 
+tones.instructions("oddball", 1)
+screen.show_secret_instructions()
+key = event.waitKeys()
+
+quitExperimentIf(key[0] == 'q')
+
+######################
+# Standing eyes closed
+######################
+
+
+if CONF["includeRest"]:
+    # give starting instructions
+    tones.instructions("standing", 0)
+
+    trigger.send("StartStand")
+    fixationTimer = core.CountdownTimer(CONF["fixation"]["duration"])
+    logging.info("starting fixation")
+    pupilSizes = []
+    while fixationTimer.getTime() > 0:
+        #  Record any extra key presses during wait
+        key = kb.getKeys()
+        if key:
+            quitExperimentIf(key[0].name == 'q')
+
+        if CONF["version"] == "main":
+            pupilSizes.append([pupil.getPupildiameter(), mainClock.getTime()])
+        core.wait(1)
+
+    trigger.send("StopStand")
+    tones.instructions("fixation", 1)
+
+    datalog["pupilSizesFixation"] = pupilSizes
+    datalog.flush()
+
 
 ###########
 # Concluion
 ###########
+
 
 # End main experiment
 screen.show_cue("DONE!")

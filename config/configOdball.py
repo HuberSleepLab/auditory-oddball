@@ -1,7 +1,7 @@
 from config.updateConfig import UpdateConfig
 
 oddballCONF = {
-    "includeRest":  {"versionMain": False, "versionDemo": False, "versionDebug": False},
+    "includeRest":  {"versionMain": True, "versionDemo": False, "versionDebug": True},
     "task": {
         "name": "oddball",
         "percentTarget": .20,
@@ -15,9 +15,10 @@ oddballCONF = {
         "text": "Instructor gives instructions (no visuals!)",
         "startPrompt": "Press any key to continue. Press q to quit.",
         "darkColor": {"versionMain": "#040029", "versionDemo": "blue", "versionDebug": "white"},
-        "fixation": ["startFixation", "endFixation"],
-        "oddball": ["startOddball", "endOddball2"],
-        "standing": ["startStanding", "endStanding"]
+        "fixation": ["startFixationLong.wav", "endFixation.wav"],
+        "instructionDuration": 5,
+        "oddball": ["startOddball.wav", "endOddball.wav"],
+        "standing": ["startStanding.wav"]
     },
     "stimuli": {
         "duration": .06,  # in seconds
@@ -29,7 +30,7 @@ oddballCONF = {
         "alarm": "horn.wav",
     },
     "fixation": {
-        "duration": {"versionMain": 60*7, "versionDemo": 1, "versionDebug": 1},
+        "duration": {"versionMain": 60*7, "versionDemo": 5, "versionDebug": 5},
     },
 }
 

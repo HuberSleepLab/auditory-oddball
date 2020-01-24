@@ -13,10 +13,13 @@ class Tones:
 
     def play(self, tone):
         self.tone.setSound(tone, secs=self.CONF["stimuli"]["duration"])
-        self.tone.play()  # TODO: make timing more precess with trigger! Maybe insert onflip here?
+        self.tone.play()
+        core.wait(self.CONF["stimuli"]["duration"])
 
     def instructions(self, task, isEnd):
         sound = os.path.join("sounds", self.CONF["instructions"][task][isEnd])
-        self.voice.setSound(sound)
+        self.voice.setVolume(0.5)
+        self.voice.setSound(
+            sound, secs=self.CONF["instructions"]["instructionDuration"])
         self.voice.play()
-        core.wait(1)
+        core.wait(self.CONF["instructions"]["instructionDuration"])
