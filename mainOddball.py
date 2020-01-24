@@ -104,6 +104,7 @@ core.wait(1)
 
 if CONF["includeRest"]:
     # TODO: play start ding
+
     trigger.send("StartFix")
     fixationTimer = core.CountdownTimer(CONF["fixation"]["duration"])
 

@@ -1,6 +1,6 @@
+import os
 
-
-from psychopy import sound
+from psychopy import sound, core
 
 
 class Tones:
@@ -9,7 +9,14 @@ class Tones:
         # TODO: record audio, see if its around .01s
         # self.tone = sound.Sound(secs=CONF["stimuli"]["duration"])
         self.tone = sound.Sound()
+        self.voice = sound.Sound()
 
     def play(self, tone):
         self.tone.setSound(tone, secs=self.CONF["stimuli"]["duration"])
         self.tone.play()  # TODO: make timing more precess with trigger! Maybe insert onflip here?
+
+    def instructions(self, task, isEnd):
+        sound = os.path.join("sounds", self.CONF["instructions"][task][isEnd])
+        self.voice.setSound(sound)
+        self.voice.play()
+        core.wait(1)

@@ -14,6 +14,9 @@ oddballCONF = {
         "text": "Instructor gives instructions (no visuals!)",
         "startPrompt": "Press any key to continue. Press q to quit.",
         "darkColor": {"versionMain": "#040029", "versionDemo": "blue", "versionDebug": "white"},
+        "fixation": ["startFixation", "endFixation"],
+        "oddball": ["startOddball", "endOddball2"],
+        "standing": ["startStanding", "endStanding"]
     },
     "stimuli": {
         "duration": .06,  # in seconds

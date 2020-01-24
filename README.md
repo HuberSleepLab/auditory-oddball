@@ -126,6 +126,7 @@ From anywhere (needs to setup shortcut first):
 Sounds:
 
 - horn.wav: https://freesound.org/people/mcpable/sounds/131930/
+- speech (https://www.ibm.com/watson/services/text-to-speech/): https://text-to-speech-demo.ng.bluemix.net/?cm_mc_uid=32181889639815798809160&cm_mc_sid_50200000=71278021579880916114&cm_mc_sid_52640000=72232831579880916152
 
 # TODO:
 
