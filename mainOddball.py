@@ -49,7 +49,7 @@ trigger = Trigger(CONF["trigger"]["serial_device"],
 
 tones = Tones(CONF)
 
-if CONF["version"] == "main":
+if CONF["recordPupils"]:
     pupil = cp()  # TODO: find a better way!
 
 logging.info('Initialization completed')
@@ -117,7 +117,7 @@ if CONF["includeRest"]:
         if key:
             quitExperimentIf(key[0].name == 'q')
 
-        if CONF["version"] == "main":
+        if CONF["recordPupils"]:
             pupilSizes.append([pupil.getPupildiameter(), mainClock.getTime()])
         core.wait(1)
 
@@ -187,7 +187,7 @@ for indx, stimulus in enumerate(stimuli):
     core.wait(0.1)
     logging.info("Trial: %s", CONF["stimuli"]["tone"][stimulus])
 
-    if CONF["version"] == "main":
+    if CONF["recordPupils"]:
         datalog["pupilSizePre"] = [
             pupil.getPupildiameter(), mainClock.getTime()]
         core.wait(CONF["task"]["prePupilGap"])
@@ -196,7 +196,7 @@ for indx, stimulus in enumerate(stimuli):
     tones.play(CONF["stimuli"]["tone"][stimulus])
     # this might not even be necessary, double check
 
-    if CONF["version"] == "main":
+    if CONF["recordPupils"]:
         datalog["pupilSizePost"] = [
             pupil.getPupildiameter(), mainClock.getTime()]
 
@@ -271,8 +271,6 @@ if CONF["includeRest"]:
         if key:
             quitExperimentIf(key[0].name == 'q')
 
-        if CONF["version"] == "main":
-            pupilSizes.append([pupil.getPupildiameter(), mainClock.getTime()])
         core.wait(1)
 
     trigger.send("StopStand")
