@@ -184,6 +184,7 @@ for indx, stimulus in enumerate(stimuli):
 
     # start trial
     datalog["trialID"] = trigger.sendTriggerId()
+    core.wait(0.1)
     logging.info("Trial: %s", CONF["stimuli"]["tone"][stimulus])
 
     if CONF["version"] == "main":
