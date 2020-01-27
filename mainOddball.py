@@ -274,7 +274,7 @@ if CONF["includeRest"]:
         core.wait(1)
 
     trigger.send("StopStand")
-    tones.instructions("fixation", 1)
+    tones.instructions("standing", 1)
 
     datalog["pupilSizesFixation"] = pupilSizes
     datalog.flush()

@@ -20,7 +20,7 @@ oddballCONF = {
         "fixation": ["startFixationLong.wav", "endFixation.wav"],
         "instructionDuration": 5,
         "oddball": ["startOddball.wav", "endOddball.wav"],
-        "standing": ["startStanding.wav"]
+        "standing": ["startStanding.wav", "endStanding.wav"]
     },
     "stimuli": {
         "duration": .06,  # in seconds
