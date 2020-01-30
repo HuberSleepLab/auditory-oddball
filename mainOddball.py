@@ -13,7 +13,7 @@ from trigger import Trigger
 from tones import Tones
 from datalog import Datalog
 
-from capturePupil import CapturePupil as cp
+from pupil_labs import PupilCore
 from psychopy import core, event, sound
 from psychopy.hardware import keyboard
 
@@ -30,10 +30,17 @@ logging.basicConfig(
     format='%(asctime)s-%(levelname)s-%(message)s',
 )  # This is a log for debugging the script, and prints messages to the terminal
 
+# needs to be first, so that if it doesn't succeed, it doesn't freeze everything
+eyetracker = PupilCore(ip=CONF["pupillometry"]
+                       ["ip"], port=CONF["pupillometry"]["port"], shouldRecord=CONF["recordEyetracking"])
+
+trigger = Trigger(CONF["trigger"]["serial_device"],
+                  CONF["sendTriggers"], CONF["trigger"]["labels"])
+
 screen = Screen(CONF)
 
 datalog = Datalog(OUTPUT_FOLDER=os.path.join(
-    'output', datetime.datetime.now(
+    'output', CONF["participant"] + "_" + CONF["session"], datetime.datetime.now(
     ).strftime("%Y-%m-%d")), CONF=CONF)  # This is for saving data
 
 kb = keyboard.Keyboard()
@@ -44,13 +51,7 @@ alarm = sound.Sound(os.path.join('sounds', CONF["sounds"]["alarm"]),
                     stereo=True)
 scorer = Scorer()
 
-trigger = Trigger(CONF["trigger"]["serial_device"],
-                  CONF["sendTriggers"], CONF["trigger"]["labels"])
-
 tones = Tones(CONF)
-
-if CONF["recordPupils"]:
-    pupil = cp()  # TODO: find a better way!
 
 logging.info('Initialization completed')
 
@@ -64,6 +65,8 @@ def quitExperimentIf(shouldQuit):
         trigger.send("Quit")
         scorer.getScore()
         logging.info('quit experiment')
+        trigger.reset()
+        eyetracker.stop_recording()
         sys.exit(2)
 
 
@@ -73,10 +76,10 @@ def onFlip(stimName, logName):
     kb.clock.reset()  # this starts the keyboard clock as soon as stimulus appears
     datalog[logName] = mainClock.getTime()
 
+
 ##############
 # Introduction
 ##############
-
 
 # Display overview of session
 screen.show_overview()
@@ -87,6 +90,10 @@ if CONF["showInstructions"]:
     screen.show_instructions()
     key = event.waitKeys()
     quitExperimentIf(key[0] == 'q')
+
+# start recording and set destination folder
+eyetracker.start_recording(os.path.join(
+    CONF["participant"], CONF["session"], CONF["task"]["name"]))
 
 
 # Cue start of the experiment
@@ -117,8 +124,8 @@ if CONF["includeRest"]:
         if key:
             quitExperimentIf(key[0].name == 'q')
 
-        if CONF["recordPupils"]:
-            pupilSizes.append([pupil.getPupildiameter(), mainClock.getTime()])
+        pupilSizes.append(
+            [eyetracker.getPupildiameter(), mainClock.getTime()])
         core.wait(1)
 
     trigger.send("StopFix")
@@ -184,21 +191,18 @@ for indx, stimulus in enumerate(stimuli):
 
     # start trial
     datalog["trialID"] = trigger.sendTriggerId()
+    eyetracker.send_trigger(
+        "StartTrial", {"trialID": indx})
     core.wait(0.1)
     logging.info("Trial: %s", CONF["stimuli"]["tone"][stimulus])
 
-    if CONF["recordPupils"]:
-        datalog["pupilSizePre"] = [
-            pupil.getPupildiameter(), mainClock.getTime()]
-        core.wait(CONF["task"]["prePupilGap"])
+    preTonePupil = [eyetracker.getPupildiameter(), mainClock.getTime()]
 
     trigger.send(triggerLabels[stimulus])
+    toneTime = mainClock.getTime()
     tones.play(CONF["stimuli"]["tone"][stimulus])
-    # this might not even be necessary, double check
 
-    if CONF["recordPupils"]:
-        datalog["pupilSizePost"] = [
-            pupil.getPupildiameter(), mainClock.getTime()]
+    postTonePupil = [eyetracker.getPupildiameter(), mainClock.getTime()]
 
     # wait a jittered delay
     isi = random.uniform(
@@ -215,6 +219,7 @@ for indx, stimulus in enumerate(stimuli):
         if key:
             quitExperimentIf(key[0].name == 'q')
             trigger.send("Response")
+            eyetracker.send_trigger("Response")
             keys.append([key[0].name, key[0].rt])
             missing = False
             missingTot = 0
@@ -223,8 +228,12 @@ for indx, stimulus in enumerate(stimuli):
     datalog["keyPresses"] = keys
     datalog["condition"] = triggerLabels[stimulus]
     datalog["ISI"] = isi
+    datalog["tone"] = {
+        "prePupil": preTonePupil,
+        "postPupil": postTonePupil,
+        "toneTime": toneTime
+    }
     scorer.scores["tot"] += 1
-    # save pupil size! before and after tone
 
     if missing and stimulus == CONF["stimuli"]["target"]:
         missingTot += 1
@@ -237,6 +246,7 @@ for indx, stimulus in enumerate(stimuli):
             core.wait(0.05)
             alarm.play()
             datalog["ALARM!"] = mainClock.getTime()
+            eyetracker.send_trigger("Alarm")
 
     elif not missing and not stimulus == CONF["stimuli"]["target"]:
         scorer.scores["incorrect"] += 1
@@ -271,6 +281,8 @@ if CONF["includeRest"]:
         if key:
             quitExperimentIf(key[0].name == 'q')
 
+        pupilSizes.append(
+            [eyetracker.getPupildiameter(), mainClock.getTime()])
         core.wait(1)
 
     trigger.send("StopStand")

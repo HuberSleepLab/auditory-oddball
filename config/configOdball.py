@@ -1,8 +1,6 @@
 from config.updateConfig import UpdateConfig
 
 oddballCONF = {
-    "includeRest":  {"versionMain": True, "versionDemo": False, "versionDebug": True},
-    "recordPupils": {"versionMain": True, "versionDemo": False, "versionDebug": False},
     "task": {
         "name": "oddball",
         "percentTarget": .20,
