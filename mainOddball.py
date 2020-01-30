@@ -92,8 +92,6 @@ if CONF["showInstructions"]:
     quitExperimentIf(key[0] == 'q')
 
 
-
-
 # Cue start of the experiment
 screen.show_cue("START")
 trigger.send("Start")
@@ -142,7 +140,6 @@ if CONF["includeRest"]:
     key = event.waitKeys()
 
     quitExperimentIf(key[0] == 'q')
-    
 
 
 #################
@@ -265,12 +262,14 @@ for indx, stimulus in enumerate(stimuli):
 
     datalog.flush()
 
+eyetracker.stop_recording()
+
 tones.instructions("oddball", 1)
 screen.show_secret_instructions()
 key = event.waitKeys()
 
 quitExperimentIf(key[0] == 'q')
-eyetracker.stop_recording()
+
 
 ######################
 # Standing eyes closed
