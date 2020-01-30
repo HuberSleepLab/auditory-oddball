@@ -20,17 +20,20 @@ oddballCONF = {
         "oddball": ["startOddball.wav", "endOddball.wav"],
         "standing": ["startStanding.wav", "endStanding.wav"]
     },
+    "includeRest": {
+        "versionMain": True, "versionDemo": False, "versionDebug": False
+    },
     "stimuli": {
         "duration": .06,  # in seconds
         "tone": [660, 440],
-        "target": 0,  # TODO: counterbalance selection!!
-        "standard": 1,  # TODO, make this automatically determined
+        "target": 1,  # TODO: counterbalance selection!!
+        "standard": 0,  # TODO, make this automatically determined
     },
     "sounds": {
         "alarm": "horn.wav",
     },
     "fixation": {
-        "duration": {"versionMain": 60*10, "versionDemo": 5, "versionDebug": 5},
+        "duration": {"versionMain": 6*60, "versionDemo": 5, "versionDebug": 5},
     },
 }
 

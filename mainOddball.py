@@ -91,9 +91,7 @@ if CONF["showInstructions"]:
     key = event.waitKeys()
     quitExperimentIf(key[0] == 'q')
 
-# start recording and set destination folder
-eyetracker.start_recording(os.path.join(
-    CONF["participant"], CONF["session"], CONF["task"]["name"]))
+
 
 
 # Cue start of the experiment
@@ -111,6 +109,10 @@ core.wait(1)
 
 
 if CONF["includeRest"]:
+    # start recording and set destination folder
+    eyetracker.start_recording(os.path.join(
+        CONF["participant"], CONF["session"], "fixation"))
+
     # give starting instructions
     tones.instructions("fixation", 0)
 
@@ -136,14 +138,20 @@ if CONF["includeRest"]:
 
     # wait for keypress before starting next task
     screen.show_secret_instructions()
+    eyetracker.stop_recording()
     key = event.waitKeys()
 
     quitExperimentIf(key[0] == 'q')
+    
 
 
 #################
 # Main experiment
 #################
+
+# start recording and set destination folder
+eyetracker.start_recording(os.path.join(
+    CONF["participant"], CONF["session"], "oddball"))
 
 screen.show_blank()
 
@@ -199,6 +207,7 @@ for indx, stimulus in enumerate(stimuli):
     preTonePupil = [eyetracker.getPupildiameter(), mainClock.getTime()]
 
     trigger.send(triggerLabels[stimulus])
+    eyetracker.send_trigger("Tone", {"id:": indx, "stimulus": stimulus})
     toneTime = mainClock.getTime()
     tones.play(CONF["stimuli"]["tone"][stimulus])
 
@@ -261,6 +270,7 @@ screen.show_secret_instructions()
 key = event.waitKeys()
 
 quitExperimentIf(key[0] == 'q')
+eyetracker.stop_recording()
 
 ######################
 # Standing eyes closed
@@ -274,21 +284,17 @@ if CONF["includeRest"]:
     trigger.send("StartStand")
     fixationTimer = core.CountdownTimer(CONF["fixation"]["duration"])
     logging.info("starting fixation")
-    pupilSizes = []
     while fixationTimer.getTime() > 0:
         #  Record any extra key presses during wait
         key = kb.getKeys()
         if key:
             quitExperimentIf(key[0].name == 'q')
 
-        pupilSizes.append(
-            [eyetracker.getPupildiameter(), mainClock.getTime()])
         core.wait(1)
 
     trigger.send("StopStand")
     tones.instructions("standing", 1)
 
-    datalog["pupilSizesFixation"] = pupilSizes
     datalog.flush()
 
 
