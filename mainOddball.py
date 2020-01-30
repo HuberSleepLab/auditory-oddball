@@ -264,6 +264,7 @@ for indx, stimulus in enumerate(stimuli):
 
 eyetracker.stop_recording()
 
+# questionnaire prompt
 tones.instructions("oddball", 1)
 screen.show_secret_instructions()
 key = event.waitKeys()
