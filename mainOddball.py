@@ -219,7 +219,7 @@ for indx, stimulus in enumerate(stimuli):
         if key:
             quitExperimentIf(key[0].name == 'q')
             trigger.send("Response")
-            eyetracker.send_trigger("Response")
+            eyetracker.send_trigger("Response", {"stimulus": stimulus})
             keys.append([key[0].name, key[0].rt])
             missing = False
             missingTot = 0
