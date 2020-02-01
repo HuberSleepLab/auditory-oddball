@@ -148,7 +148,7 @@ if CONF["includeRest"]:
 
 # start recording and set destination folder
 eyetracker.start_recording(os.path.join(
-    CONF["participant"], CONF["session"], "oddball"))
+    CONF["participant"], CONF["task"]["name"], CONF["session"]))
 
 screen.show_blank()
 
