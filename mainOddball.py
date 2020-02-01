@@ -187,7 +187,7 @@ triggerLabels[CONF["stimuli"]["standard"]] = "Standard"
 
 # give starting instructions
 tones.instructions("oddball", 0)
-tones.play(CONF["stimuli"]["tone"][0])
+tones.play(CONF["stimuli"]["tone"][CONF["stimuli"]["target"]])
 core.wait(3)
 
 missingTot = 0
