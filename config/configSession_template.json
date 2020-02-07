@@ -29,6 +29,11 @@
     "versionDemo": false,
     "versionDebug": false
   },
+  "savePupillometry": {
+    "versionMain": true,
+    "versionDemo": false,
+    "versionDebug": false
+  },
   "timing": {
     "overview": 1,
     "cue": 1,
