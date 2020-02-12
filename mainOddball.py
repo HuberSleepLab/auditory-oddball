@@ -110,7 +110,7 @@ core.wait(1)
 if CONF["includeRest"]:
     # start recording and set destination folder
     eyetracker.start_recording(os.path.join(
-        CONF["participant"], CONF["task"]["name"], CONF["session"]))
+        CONF["participant"], "Fixation", CONF["session"]))
 
     # give starting instructions
     tones.instructions("fixation", 0)
@@ -149,7 +149,7 @@ if CONF["includeRest"]:
 
 # start recording and set destination folder
 eyetracker.start_recording(os.path.join(
-    CONF["participant"], CONF["task"]["name"], CONF["session"]))
+    CONF["participant"], "Oddball", CONF["session"]))
 
 screen.show_blank()
 
