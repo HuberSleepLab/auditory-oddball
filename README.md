@@ -134,3 +134,26 @@ Sounds:
 - have a very dim fixation square, and little text in bottom-left so experimenter knows what is happening in the "dark"
 - make sure timing is as fast as possible!
 - ask Simone about how to refer to the same configuration session file!
+
+
+## Install on Windows II
+
+1. Open PowerShell
+2. make sure have python (better 3.8): run `python --version`
+3. cd into code directory
+4. create virtual environment: `python -m venv env`
+5. Allow script execution in powershell: `Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force`
+6. Activate virtual environment: `.\env\Scripts\activate`
+7. Confirm that virtual enviroment is active by seeing `(env)` written before path in prompt
+8. Install dependencies: `pip install -r requirements.txt`
+
+
+## Install on Windows III
+1. Install old version of psychopy: https://github.com/psychopy/psychopy/releases/tag/3.2.4
+
+
+# Run on Windows
+
+1. Open PowerShell
+2. cd into code directory
+3. Run ` & 'C:\Program Files\PsychoPy3\python.exe' .\mainOddball.py`
