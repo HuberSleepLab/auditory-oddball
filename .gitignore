@@ -1,4 +1,5 @@
 env
+env2
 *.pyc
 output
 longword.py
